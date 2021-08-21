@@ -60,4 +60,5 @@ $route['categoria/(:any)'] = 'categoria/index/$1';
 $route['marca/(:any)'] = 'marca/index/$1';
 $route['busca'] = 'busca/index/';
 $route['carrinho'] = 'carrinho/index/$1';
+$route['sucesso'] = 'pagar/sucesso/';
 

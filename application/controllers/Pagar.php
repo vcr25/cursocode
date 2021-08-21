@@ -412,6 +412,37 @@ class Pagar extends CI_Controller{
 
     }
 
+    public function sucesso()
+    {
+        $data = array(
+            'titulo' => 'Pedido realizado com sucesso',
+        );
+
+
+        $pedido_realizado = $this->session->userdata('pedido_realizado');
+
+        /* Se estiver na sessão 'pedido realizado' é enviado para a view Sucesso */
+        if(!empty($pedido_realizado)){
+            //Sucesso 
+
+            /* Remove o link_pagamento caso seja pagamento por cartão */
+            if($pedido_realizado['forma_pagamento'] == 1){
+                unset($pedido_realizado['transacao_link_pagamento']);
+            }
+
+            $data['pedido_realizado'][] = (object) $pedido_realizado;
+            
+            
+        }else{
+            redirect('/');
+        }
+
+        $this->load->view('web/layout/header', $data);
+        $this->load->view('web/sucesso');
+        $this->load->view('web/layout/footer');
+
+    }
+
     public function valida_cpf($cpf)
     {
 

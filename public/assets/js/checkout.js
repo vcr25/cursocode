@@ -213,8 +213,9 @@ var App_checkout = function(){
                 success: function(response){
                     if(response.erro === 0){
 
-                      //  window.location = BASE_URL + 'sucesso';
-                      alert('Sucesso');
+                      window.location = BASE_URL + 'sucesso';
+                      //alert('Sucesso');
+                      $('#opcao_boleto').html('');
 
                     }else{
                         console.log(response.mensagem);
