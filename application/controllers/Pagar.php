@@ -93,105 +93,131 @@ class Pagar extends CI_Controller{
             exit('Ação não permitida');
         }
 
-          $this->form_validation->set_rules('cliente_nome', 'Nome', 'trim|required|min_length[4]|max_length[40]');
-          $this->form_validation->set_rules('cliente_sobrenome', 'Sobrenome', 'trim|required|min_length[4]|max_length[140]');
-          $this->form_validation->set_rules('cliente_data_nascimento', 'Data de Nascimento', 'trim|required');
-          $this->form_validation->set_rules('cliente_cpf', 'CPF do cliente', 'trim|required|exact_length[14]|callback_valida_cpf');
-          $this->form_validation->set_rules('cliente_email', 'Email', 'trim|required|valid_email|callback_valida_email');
+        $cliente_logado = $this->ion_auth->logged_in();
 
-         
-          $this->form_validation->set_rules('cliente_telefone_movel', 'Telefone', 'trim|required|callback_valida_telefone_movel');
-          $this->form_validation->set_rules('cliente_cep', 'CEP', 'trim|required');
-          $this->form_validation->set_rules('cliente_endereco', 'Logradouro', 'trim|required');
-          $this->form_validation->set_rules('cliente_numero_endereco', 'Número', 'trim|required');
-          $this->form_validation->set_rules('cliente_bairro', 'Bairro', 'trim|required');
-          $this->form_validation->set_rules('cliente_cidade', 'Cidade', 'trim|required');
-          $this->form_validation->set_rules('cliente_estado', 'Estado', 'trim|required');
-         
+        if(!$cliente_logado){
+            $this->form_validation->set_rules('cliente_nome', 'Nome', 'trim|required|min_length[4]|max_length[40]');
+            $this->form_validation->set_rules('cliente_sobrenome', 'Sobrenome', 'trim|required|min_length[4]|max_length[140]');
+            $this->form_validation->set_rules('cliente_data_nascimento', 'Data de Nascimento', 'trim|required');
+            $this->form_validation->set_rules('cliente_cpf', 'CPF do cliente', 'trim|required|exact_length[14]|callback_valida_cpf');
+            $this->form_validation->set_rules('cliente_email', 'Email', 'trim|required|valid_email|callback_valida_email');
+  
+           
+            $this->form_validation->set_rules('cliente_telefone_movel', 'Telefone', 'trim|required|callback_valida_telefone_movel');
+            $this->form_validation->set_rules('cliente_cep', 'CEP', 'trim|required');
+            $this->form_validation->set_rules('cliente_endereco', 'Logradouro', 'trim|required');
+            $this->form_validation->set_rules('cliente_numero_endereco', 'Número', 'trim|required');
+            $this->form_validation->set_rules('cliente_bairro', 'Bairro', 'trim|required');
+            $this->form_validation->set_rules('cliente_cidade', 'Cidade', 'trim|required');
+            $this->form_validation->set_rules('cliente_estado', 'Estado', 'trim|required');
+           
+  
+            $this->form_validation->set_rules('cliente_senha', 'Senha', 'trim|required|min_length[6]|max_length[200]');
+            $this->form_validation->set_rules('cliente_confirmacao', 'Confirma', 'trim|matches[cliente_senha]');
+  
+            $this->form_validation->set_rules('opcao_frete_carrinho', 'Frete', 'trim|required');
+  
+            //Variável para menssagem de retorno
+            $retorno = array();
+  
+            if($this->form_validation->run()){
+              //Continua o processamento para criar o usuario/cliente
+  
+              $data = elements(
+                  array(
+                      'cliente_nome',
+                      'cliente_sobrenome',
+                      'cliente_data_nascimento',
+                      'cliente_cpf',
+                      'cliente_email',
+                      'cliente_telefone_movel',
+                      'cliente_cep',
+                      'cliente_endereco',
+                      'cliente_numero_endereco',
+                      'cliente_bairro',
+                      'cliente_cidade',
+                      'cliente_estado',
+                  ),$this->input->post()
+              );
+  
+              $data = html_escape($data);
+  
+              // echo '<pre>';
+             //  print_r($data);
+              // exit();
+  
+              $this->core_model->insert('clientes', $data, TRUE);
+              $cliente_user_id = $this->session->userdata('last_id');
+  
+              //Incio da criação do Usuário
+              $username = $this->input->post('cliente_nome');
+              $password = $this->input->post('cliente_senha');
+              $email = $this->input->post('cliente_email');
+  
+              $dados_usuario = array(
+                  'cliente_user_id' => $cliente_user_id,
+                  'first_name' => $this->input->post('cliente_nome'),
+                  'last_name' => $this->input->post('cliente_sobrenome'),
+                  'phone' => $this->input->post('cliente_telefone_movel'),
+                  'active' => 1,
+              );
+              $group = array('2'); // Add ao grupo como cliente.
+  
+              if($this->ion_auth->register($username, $password, $email, $dados_usuario, $group)){
+                  $retorno['erro'] = 0;
+                  $retorno['mensagem'] = 'Usuário do cliente criado';
+              }else{
+                  $retorno['erro'] = 05;
+                  $retorno['mensagem'] = 'Erro ao criar o cliente antes do  pagamento';
+              }
+  
+            }else{
+              //Erro na validação
+              $retorno['erro'] = 3;
+              $retorno['cliente_nome'] = form_error('cliente_nome');
+              $retorno['cliente_sobrenome'] = form_error('cliente_sobrenome');
+              $retorno['cliente_data_nascimento'] = form_error('cliente_data_nascimento');
+              $retorno['cliente_cpf'] = form_error('cliente_cpf');
+              $retorno['cliente_email'] = form_error('cliente_email');
+              $retorno['opcao_frete_carrinho'] = form_error('opcao_frete_carrinho');
+              $retorno['cliente_telefone_movel'] = form_error('cliente_telefone_movel');
+              $retorno['cliente_cep'] = form_error('cliente_cep');
+              $retorno['cliente_endereco'] = form_error('cliente_endereco');
+              $retorno['cliente_numero_endereco'] = form_error('cliente_numero_endereco');
+              $retorno['cliente_bairro'] = form_error('cliente_bairro');
+              $retorno['cliente_cidade'] = form_error('cliente_cidade');
+              $retorno['cliente_estado'] = form_error('cliente_estado');
+              $retorno['cliente_senha'] = form_error('cliente_senha');
+              $retorno['cliente_confirmacao'] = form_error('cliente_confirmacao');
+  
+              echo json_encode($retorno);
+  
+              exit();
+  
+            }
+        }
+   
 
-          $this->form_validation->set_rules('cliente_senha', 'Senha', 'trim|required|min_length[6]|max_length[200]');
-          $this->form_validation->set_rules('cliente_confirmacao', 'Confirma', 'trim|matches[cliente_senha]');
+        if(!preg_match('/[0-9]{5}-[0-9]{3}/', $this->input->post('cliente_cep'))){
+            $retorno['erro'] = 3;
+            $retorno['cliente_cep'] = "Informe um CEP válido";
+            echo json_encode($retorno);
+            exit();
+        }
+        if(!$this->input->post('opcao_frete_carrinho')){
+            $retorno['erro'] = 3;
+            $retorno['opcao_frete_carrinho'] = "Escolha uma opção de frete";
+            echo json_encode($retorno);
+            exit();
+        }
 
-          $this->form_validation->set_rules('opcao_frete_carrinho', 'Frete', 'trim|required');
-
-          //Variável para menssagem de retorno
-          $retorno = array();
-
-          if($this->form_validation->run()){
-            //Continua o processamento para criar o usuario/cliente
-
-            $data = elements(
-                array(
-                    'cliente_nome',
-                    'cliente_sobrenome',
-                    'cliente_data_nascimento',
-                    'cliente_cpf',
-                    'cliente_email',
-                    'cliente_telefone_movel',
-                    'cliente_cep',
-                    'cliente_endereco',
-                    'cliente_numero_endereco',
-                    'cliente_bairro',
-                    'cliente_cidade',
-                    'cliente_estado',
-                ),$this->input->post()
-            );
-
-            $data = html_escape($data);
-
-            // echo '<pre>';
-           //  print_r($data);
-            // exit();
-
-            $this->core_model->insert('clientes', $data, TRUE);
+        if(!$cliente_logado){
             $cliente_user_id = $this->session->userdata('last_id');
 
-            //Incio da criação do Usuário
-            $username = $this->input->post('cliente_nome');
-            $password = $this->input->post('cliente_senha');
-            $email = $this->input->post('cliente_email');
-
-            $dados_usuario = array(
-                'cliente_user_id' => $cliente_user_id,
-                'first_name' => $this->input->post('cliente_nome'),
-                'last_name' => $this->input->post('cliente_sobrenome'),
-                'phone' => $this->input->post('cliente_telefone_movel'),
-                'active' => 1,
-            );
-            $group = array('2'); // Add ao grupo como cliente.
-
-            if($this->ion_auth->register($username, $password, $email, $dados_usuario, $group)){
-                $retorno['erro'] = 0;
-                $retorno['mensagem'] = 'Usuário do cliente criado';
-            }else{
-                $retorno['erro'] = 05;
-                $retorno['mensagem'] = 'Erro ao criar o cliente antes do  pagamento';
-            }
-
-          }else{
-            //Erro na validação
-            $retorno['erro'] = 3;
-            $retorno['cliente_nome'] = form_error('cliente_nome');
-            $retorno['cliente_sobrenome'] = form_error('cliente_sobrenome');
-            $retorno['cliente_data_nascimento'] = form_error('cliente_data_nascimento');
-            $retorno['cliente_cpf'] = form_error('cliente_cpf');
-            $retorno['cliente_email'] = form_error('cliente_email');
-            $retorno['opcao_frete_carrinho'] = form_error('opcao_frete_carrinho');
-            $retorno['cliente_telefone_movel'] = form_error('cliente_telefone_movel');
-            $retorno['cliente_cep'] = form_error('cliente_cep');
-            $retorno['cliente_endereco'] = form_error('cliente_endereco');
-            $retorno['cliente_numero_endereco'] = form_error('cliente_numero_endereco');
-            $retorno['cliente_bairro'] = form_error('cliente_bairro');
-            $retorno['cliente_cidade'] = form_error('cliente_cidade');
-            $retorno['cliente_estado'] = form_error('cliente_estado');
-            $retorno['cliente_senha'] = form_error('cliente_senha');
-            $retorno['cliente_confirmacao'] = form_error('cliente_confirmacao');
-
-            echo json_encode($retorno);
-
-            exit();
-
-          }
+        }else{
+            $cliente_user_id = $this->session->userdata('cliente_user_id');
+        }
+     
 
          // echo json_encode($retorno);
 
@@ -200,6 +226,7 @@ class Pagar extends CI_Controller{
         if(!$cliente = $this->core_model->get_by_id('clientes', array('cliente_id' => $cliente_user_id))){
             $retorno['erro'] = 6;
             $retorno['mensagem'] = 'Cliente não encontrado';
+            echo json_encode($retorno);
             exit();
         }else{
             //Cliente encontrado
@@ -211,6 +238,7 @@ class Pagar extends CI_Controller{
             if(!$hash_pagamento){
                 $retorno['erro'] = 7;
                 $retorno['mensagem'] = 'Hash do cliente não foi gerado';
+                echo json_encode($retorno);
                 exit();
             }else{
                 //Hash gerado
@@ -326,6 +354,7 @@ class Pagar extends CI_Controller{
 
                     $retorno['erro'] = $transaction->error->code;
                     $retorno['mensagem'] = 'Houve um erro na transação';
+                    echo json_encode($retorno);
                     exit();
                 }
 
@@ -390,7 +419,7 @@ class Pagar extends CI_Controller{
                 $retorno['mensagem'] = 'Seu pedido foi realizado com sucesso';
                 $retorno['pedido_gerado'] = $pedido_codigo;
                 $retorno['transacao_link_pagamento'] = $transaction->paymentLink;
-                $retorno['cliente_nome_completo'] = $cliente->cliente_nome . '' . $cliente->cliente_sobrenome;
+                $retorno['cliente_nome_completo'] = $cliente->cliente_nome . '  ' . $cliente->cliente_sobrenome;
 
 
                 /* Gravamos na sessão os dados do pedido para mostrar para o cliente */

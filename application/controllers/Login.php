@@ -32,6 +32,15 @@ class Login extends CI_Controller
            if($this->ion_auth->is_admin()){
             redirect('restrita');
            }else{
+
+               // Colocar na sessão o usuário logado
+
+                $cliente = $this->core_model->get_by_id('clientes', array('cliente_email' => $identity));
+
+                $this->session->set_userdata('cliente_user_id', $cliente->cliente_id);
+
+                
+
                if($login == 'login'){
                 redirect('/'); 
                }else{

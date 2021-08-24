@@ -258,6 +258,9 @@
                                         <div id="retorno-frete">
 
                                         </div>
+                                        <div id="opcao_frete_carrinho" class="text-danger" mt-2>
+
+                                        </div>
                                     </div>
 
                                 <?php if(!$logged_in): ?>
