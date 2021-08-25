@@ -34,8 +34,8 @@
                    <?php if($pedido->forma_pagamento != 1): ?>
                         <div class="mt-15">
                             <a href="<?php echo $pedido->transacao_link_pagamento; ?>" target="_blank">
-                                <i class="fa fa-barcode fa-5x"></i>
-                                <p class="text-success"><?php echo ($pedido->forma_pagamento = 2 ? 'Imprimir Boleto de pagamento' : 'Concluir pagamento no ambiente do seu banco'); ?> </p>
+                            <?php echo ($pedido->forma_pagamento == 2 ? ' <i class="fa fa-barcode fa-5x"></i>' : '<i class="fa fa-university fa-5x"></i>' ); ?> 
+                            <p class="text-success mt-3"><?php echo ($pedido->forma_pagamento == 2 ? 'Imprimir Boleto de pagamento' : 'Concluir pagamento no ambiente do seu banco'); ?> </p>
                             </a>
                         </div>
                    <?php endif; ?>
