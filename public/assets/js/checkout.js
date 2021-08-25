@@ -326,6 +326,120 @@ var App_checkout = function(){
        
     }
 
+    var pagar_cartao_credito = function(){
+
+        $('#btn-pagar-cartao').on('click', function(){
+
+            gerar_token_pagamento();
+            
+           $('[name="hash_pagamento"]').val(PagSeguroDirectPayment.getSenderHash());
+
+           var form = $('.do-payment');
+
+            $.ajax({
+                type: "post",
+                url: BASE_URL + 'pagar/debito_conta',
+                dataType: 'json',
+                data: form.serialize(),
+                beforeSend: function(){
+                    //Apagar erros quando houver
+                    $('#opcao_bnt_debito_conta').html('<span class="text-black"> <i class="fa fa-cog fa-spin"></i> &nbsp Processando Pagamento... </span>');
+                   
+                    $('#cliente_nome').html('');
+                    $('#cliente_sobrenome').html('');
+                    $('#cliente_data_nascimento').html('');
+                    $('#cliente_cpf').html('');
+                    $('#cliente_email').html('');
+                    $('#opcao_frete_carrinho').html('');
+                    $('#cliente_telefone_movel').html('');
+                    $('#cliente_cep').html('');
+                    $('#cliente_endereco').html('');
+                    $('#cliente_numero_endereco').html('');
+                    $('#cliente_bairro').html('');
+                    $('#cliente_cidade').html('');
+                    $('#cliente_estado').html('');
+                    $('#cliente_senha').html('');
+                    $('#cliente_confirmacao').html('');
+                    $('#opcao_banco').html('');
+
+                },
+
+
+                success: function(response){
+                    if(response.erro === 0){
+
+                      window.location = BASE_URL + 'sucesso';
+                      //alert('Sucesso');
+                      $('#opcao_bnt_debito_conta').html('');
+
+                    }else{
+                        console.log(response.mensagem);
+                        $('#opcao_bnt_debito_conta').html('');
+                        
+                        $('#cliente_nome').html(response.cliente_nome);
+                        $('#cliente_sobrenome').html(response.cliente_sobrenome);
+                        $('#cliente_data_nascimento').html(response.cliente_data_nascimento);
+                        $('#cliente_cpf').html(response.cliente_cpf);
+                        $('#cliente_email').html(response.cliente_email);
+                        $('#opcao_frete_carrinho').html(response.opcao_frete_carrinho);
+                        $('#cliente_telefone_movel').html(response.cliente_telefone_movel);
+                        $('#cliente_cep').html(response.cliente_cep);
+                        $('#cliente_endereco').html(response.cliente_endereco);
+                        $('#cliente_numero_endereco').html(response.cliente_numero_endereco);
+                        $('#cliente_bairro').html(response.cliente_bairro);
+                        $('#cliente_cidade').html(response.cliente_cidade);
+                        $('#cliente_estado').html(response.cliente_estado);
+                        $('#cliente_senha').html(response.cliente_senha);
+                        $('#cliente_confirmacao').html(response.cliente_confirmacao);
+                        $('#opcao_banco').html(response.opcao_banco);
+
+                    }
+                },
+
+                error: function(error){
+                    alert('Não foi possivel completar a compra');
+                }
+            });
+        });
+        
+        function gerar_token_pagamento(){
+            var card_titular = $('[name="cliente_nome_titular"]').val();
+            if(!card_titular){
+                $("#cliente_nome_titular").html("Obrigatório");
+                return false;
+            }
+
+            var card_number = $('[name="numero_cartao"]').val();
+            if(!card_number){
+                $("#numero_cartao").html("Obrigatório");
+                return false;
+            }
+
+            var card_expire = $('[name="validade_cartao"]').val();
+            if(!card_expire){
+                $("#validade_cartao").html("Obrigatório");
+                return false;
+            }else{
+                card_expire = card_expire.split('/');
+
+                var mes_expire = card_expire[0];
+                var ano_expire = card_expire[1];
+
+            }
+
+            var card_cvv = $('[name="codigo_seguranca"]').val();
+            if(!card_cvv){
+                $("#codigo_seguranca").html("Obrigatório");
+                return false;
+            }
+
+           
+        }
+    
+       
+    }
+
+    
     var forma_pagamento = function(){
         $('.forma_pagamento').on('change', function(){
             var opcao = $(this).val();
@@ -369,6 +483,7 @@ var App_checkout = function(){
             forma_pagamento();
             pagar_boleto();
             pagar_debito_conta();
+            pagar_cartao_credito();
           
         }
     }
