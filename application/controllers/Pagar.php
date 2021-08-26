@@ -840,7 +840,7 @@ class Pagar extends CI_Controller{
   
             if($this->form_validation->run()){
               //Continua o processamento para criar o usuario/cliente
-  
+               
               $data = elements(
                   array(
                       'cliente_nome',
@@ -1034,9 +1034,18 @@ class Pagar extends CI_Controller{
                 $pagar_pedido['creditCardHolderAreaCode'] = substr($telefone_comprador, 1, 2);
                 $pagar_pedido['creditCardHolderPhone'] = trim(str_replace('-', '', substr($telefone_comprador, 4, 15)));
 
+                $pagar_pedido['billingAddressStreet'] = $endereco_comprador;
+                $pagar_pedido['billingAddressNumber'] = $endereco_numero_comprador;
+                
+                $pagar_pedido['billingAddressDistrict'] = $bairro_comprador;
+                $pagar_pedido['billingAddressPostalCode'] = $cep_comprador;
+                $pagar_pedido['billingAddressCity'] = $cidade_comprador;
+                $pagar_pedido['billingAddressState'] = $estado_comprador;
+                $pagar_pedido['billingAddressCountry'] = 'BRA';
+
                 //Número de parcelas da compra com o cartão de credito
                 $pagar_pedido['installmentQuantity'] = 1;
-                $pagar_pedido['installmentValue'] = str_replace(",", "", $this->carrinho_compras->get_total() + $opcao_frete_carrinho_valor);
+                $pagar_pedido['installmentValue'] = str_replace(",", "", $this->carrinho_compras->get_total()) + $opcao_frete_carrinho_valor;
 
                 //Inicio da requisição de pagamento
                 if($config_pagseguro->config_ambiente == 0){
@@ -1132,7 +1141,6 @@ class Pagar extends CI_Controller{
                     'transacao_codigo_hash' => $transaction->code,
                     'transacao_tipo_metodo_pagamento' => $transaction->paymentMethod->type,
                     'transacao_codigo_metodo_pagamento' => $transaction->paymentMethod->code,
-                    'transacao_link_pagamento' => $transaction->paymentLink,
                     'transacao_valor_bruto' => $transaction->grossAmount,
                     'transacao_valor_taxa_pagseguro' => $transaction->feeAmount,
                     'transacao_valor_liquido' => $transaction->netAmount,
@@ -1150,7 +1158,7 @@ class Pagar extends CI_Controller{
                 $retorno['forma_pagamento'] = $this->input->post('forma_pagamento');
                 $retorno['mensagem'] = 'Seu pedido foi realizado com sucesso';
                 $retorno['pedido_gerado'] = $pedido_codigo;
-                $retorno['transacao_link_pagamento'] = $transaction->paymentLink;
+               // $retorno['transacao_link_pagamento'] = $transaction->paymentLink; //No Pagamento com cartão não tem link de pagamento
                 $retorno['cliente_nome_completo'] = $cliente->cliente_nome . '  ' . $cliente->cliente_sobrenome;
 
 
