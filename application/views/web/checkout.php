@@ -448,7 +448,7 @@
                                         <div class="order-button-payment">
                                             <input type="button" id="btn-pagar-cartao" value="Pagar com Cartão" style="heigth:40px;margin:20px 0 0;font-size:14px;">
                                         </div>
-                                        <input id="token_pagamento" class="form_control" type="hidden" name="token_pagamento">
+                                        <input id="token_pagamento" class="form_control" type="text" name="token_pagamento">
                                         <div id="opcao_pagar_cartao" class="mt-2"></div>
                                     </div>
 

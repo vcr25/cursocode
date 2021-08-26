@@ -332,74 +332,79 @@ var App_checkout = function(){
 
             gerar_token_pagamento();
             
-           $('[name="hash_pagamento"]').val(PagSeguroDirectPayment.getSenderHash());
+            $('[name="hash_pagamento"]').val(PagSeguroDirectPayment.getSenderHash());
 
-           var form = $('.do-payment');
+            var form = $('.do-payment');
+ 
+             $.ajax({
+                 type: "post",
+                 url: BASE_URL + 'pagar/cartao_credito',
+                 dataType: 'json',
+                 data: form.serialize(),
+                 beforeSend: function(){
+                     //Apagar erros quando houver
+                     $('#opcao_pagar_cartao').html('<span class="text-black"> <i class="fa fa-cog fa-spin"></i> &nbsp Processando Pagamento... </span>');
+                    
+                     $('#cliente_nome').html('');
+                     $('#cliente_sobrenome').html('');
+                     $('#cliente_data_nascimento').html('');
+                     $('#cliente_cpf').html('');
+                     $('#cliente_email').html('');
+                     $('#opcao_frete_carrinho').html('');
+                     $('#cliente_telefone_movel').html('');
+                     $('#cliente_cep').html('');
+                     $('#cliente_endereco').html('');
+                     $('#cliente_numero_endereco').html('');
+                     $('#cliente_bairro').html('');
+                     $('#cliente_cidade').html('');
+                     $('#cliente_estado').html('');
+                     $('#cliente_senha').html('');
+                     $('#cliente_confirmacao').html('');
+                     $('#opcao_banco').html('');
+ 
+                 },
+ 
+ 
+                 success: function(response){
+                     if(response.erro === 0){
+ 
+                       window.location = BASE_URL + 'sucesso';
+                       //alert('Sucesso');
+                      
+ 
+                     }else{
 
-            $.ajax({
-                type: "post",
-                url: BASE_URL + 'pagar/debito_conta',
-                dataType: 'json',
-                data: form.serialize(),
-                beforeSend: function(){
-                    //Apagar erros quando houver
-                    $('#opcao_bnt_debito_conta').html('<span class="text-black"> <i class="fa fa-cog fa-spin"></i> &nbsp Processando Pagamento... </span>');
-                   
-                    $('#cliente_nome').html('');
-                    $('#cliente_sobrenome').html('');
-                    $('#cliente_data_nascimento').html('');
-                    $('#cliente_cpf').html('');
-                    $('#cliente_email').html('');
-                    $('#opcao_frete_carrinho').html('');
-                    $('#cliente_telefone_movel').html('');
-                    $('#cliente_cep').html('');
-                    $('#cliente_endereco').html('');
-                    $('#cliente_numero_endereco').html('');
-                    $('#cliente_bairro').html('');
-                    $('#cliente_cidade').html('');
-                    $('#cliente_estado').html('');
-                    $('#cliente_senha').html('');
-                    $('#cliente_confirmacao').html('');
-                    $('#opcao_banco').html('');
-
-                },
-
-
-                success: function(response){
-                    if(response.erro === 0){
-
-                      window.location = BASE_URL + 'sucesso';
-                      //alert('Sucesso');
-                      $('#opcao_bnt_debito_conta').html('');
-
-                    }else{
-                        console.log(response.mensagem);
-                        $('#opcao_bnt_debito_conta').html('');
+                        if(response.token_pagamento){
+                            $("opcao_pagar_cartao").html('<span class="text-danger"> &nbsp Verifique os dados do cartão de credito e tente novamente </span>');
+                            gerar_token_pagamento();
+                        }
                         
-                        $('#cliente_nome').html(response.cliente_nome);
-                        $('#cliente_sobrenome').html(response.cliente_sobrenome);
-                        $('#cliente_data_nascimento').html(response.cliente_data_nascimento);
-                        $('#cliente_cpf').html(response.cliente_cpf);
-                        $('#cliente_email').html(response.cliente_email);
-                        $('#opcao_frete_carrinho').html(response.opcao_frete_carrinho);
-                        $('#cliente_telefone_movel').html(response.cliente_telefone_movel);
-                        $('#cliente_cep').html(response.cliente_cep);
-                        $('#cliente_endereco').html(response.cliente_endereco);
-                        $('#cliente_numero_endereco').html(response.cliente_numero_endereco);
-                        $('#cliente_bairro').html(response.cliente_bairro);
-                        $('#cliente_cidade').html(response.cliente_cidade);
-                        $('#cliente_estado').html(response.cliente_estado);
-                        $('#cliente_senha').html(response.cliente_senha);
-                        $('#cliente_confirmacao').html(response.cliente_confirmacao);
-                        $('#opcao_banco').html(response.opcao_banco);
 
-                    }
-                },
-
-                error: function(error){
-                    alert('Não foi possivel completar a compra');
-                }
-            });
+                         $('#cliente_nome').html(response.cliente_nome);
+                         $('#cliente_sobrenome').html(response.cliente_sobrenome);
+                         $('#cliente_data_nascimento').html(response.cliente_data_nascimento);
+                         $('#cliente_cpf').html(response.cliente_cpf);
+                         $('#cliente_email').html(response.cliente_email);
+                         $('#opcao_frete_carrinho').html(response.opcao_frete_carrinho);
+                         $('#cliente_telefone_movel').html(response.cliente_telefone_movel);
+                         $('#cliente_cep').html(response.cliente_cep);
+                         $('#cliente_endereco').html(response.cliente_endereco);
+                         $('#cliente_numero_endereco').html(response.cliente_numero_endereco);
+                         $('#cliente_bairro').html(response.cliente_bairro);
+                         $('#cliente_cidade').html(response.cliente_cidade);
+                         $('#cliente_estado').html(response.cliente_estado);
+                         $('#cliente_senha').html(response.cliente_senha);
+                         $('#cliente_confirmacao').html(response.cliente_confirmacao);
+                         
+ 
+                     }
+                 },
+ 
+                 error: function(error){
+                     alert('Não foi possivel completar a compra');
+                 }
+             });
+         
         });
         
         function gerar_token_pagamento(){
@@ -433,7 +438,54 @@ var App_checkout = function(){
                 return false;
             }
 
-           
+           var bandeira = "";
+
+           PagSeguroDirectPayment.getBrand({
+
+            cardBin: card_number.replace(" ", ""), //Retira o espaço do número do cartão para validar o cardBin.
+
+            success: function(response){
+                bandeira = response.brand['name'];
+                
+                if(bandeira){
+                    //Gerada a Bandeira, Gerar o cardToken
+                    PagSeguroDirectPayment.createCardToken({
+                        cardNumber: card_number, 
+                        brand: bandeira,
+                        cvv: card_cvv,
+                        expirationMonth:mes_expire,
+                        expirationYear:ano_expire,
+                      
+
+                        success: function(response){
+                            //Caso o token seja gerado.
+                            var token_pagamento = response.card.token;
+                            
+                            if(token_pagamento){
+                                $("#token_pagamento").val(token_pagamento);
+                            }else{
+                                alert('Token de pagamento não foi gerado' + response.message);
+                            }
+
+                        },
+                        error: function(response){
+
+                            //Caso o token não seja gerado.
+                            alert('Erro ao usar o cartão, verifique os dados...' + response.message);
+                        }
+                    });
+
+                }else{
+                    //Não gerou a bandeira 
+                    alert('Não foi possivel gerar a bandeira do cartão' + response.statusMessage);
+                }
+            },
+            error: function(response){
+                alert(response);
+            }
+
+
+           });
         }
     
        
