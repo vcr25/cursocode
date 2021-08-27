@@ -350,7 +350,10 @@ class Pagar extends CI_Controller{
                 //Verifica se houve erro na transação
 
                 if(isset($transaction->error->code)){
-                    $this->core_model->delete('clientes', array('cliente_id' => $cliente_id));
+
+                    if(!$cliente_logado){
+                        $this->core_model->delete('clientes', array('cliente_id' => $cliente_id));
+                    }
 
                     $retorno['erro'] = $transaction->error->code;
                     $retorno['mensagem'] = 'Houve um erro na transação';
@@ -713,7 +716,10 @@ class Pagar extends CI_Controller{
                 //Verifica se houve erro na transação
 
                 if(isset($transaction->error->code)){
-                    $this->core_model->delete('clientes', array('cliente_id' => $cliente_id));
+
+                    if(!$cliente_logado){
+                        $this->core_model->delete('clientes', array('cliente_id' => $cliente_id));
+                    }
 
                     $retorno['erro'] = $transaction->error->code;
                     $retorno['mensagem'] = 'Houve um erro na transação';
@@ -1091,7 +1097,10 @@ class Pagar extends CI_Controller{
                 //Verifica se houve erro na transação
 
                 if(isset($transaction->error->code)){
-                    $this->core_model->delete('clientes', array('cliente_id' => $cliente_id));
+
+                   if(!$cliente_logado){
+                      $this->core_model->delete('clientes', array('cliente_id' => $cliente_id));
+                   }
 
                     $retorno['erro'] = $transaction->error->code;
                     $retorno['mensagem'] = 'Houve um erro na transação';
