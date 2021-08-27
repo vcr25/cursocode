@@ -38,6 +38,7 @@ class Login extends CI_Controller
                 $cliente = $this->core_model->get_by_id('clientes', array('cliente_email' => $identity));
 
                 $this->session->set_userdata('cliente_user_id', $cliente->cliente_id);
+                $this->session->set_userdata('cliente_nome', $cliente->cliente_nome .' '. $cliente->cliente_sobrenome);
 
                 
 
