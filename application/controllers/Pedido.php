@@ -7,7 +7,7 @@ class Pedido extends CI_Controller {
     public function __construct()
 	{
 		parent::__construct();
-
+        $this->load->helper('text');
         if(!$this->ion_auth->logged_in()){
             redirect('login');
         }
@@ -18,6 +18,8 @@ class Pedido extends CI_Controller {
     {
         $cliente_user_id = $this->session->userdata('cliente_user_id');
 
+       
+
         if($cliente_user_id){
             $data = array(
                 'titulo' => 'Meus Pedidos',
@@ -25,9 +27,13 @@ class Pedido extends CI_Controller {
             );
         }
 
-        echo '<pre>';
+        foreach ($data['pedidos'] as $key => $pedido) {
+            $data['pedidos'][$key]->pedidos_produtos = $this->core_model->get_all('pedidos_produtos', array('pedido_id' => $pedido->pedido_id));
+        }
+
+        /* echo '<pre>';
         print_r($data);
-        exit();
+        exit(); */
 
             $this->load->view('web/layout/header', $data);
             $this->load->view('web/pedidos');

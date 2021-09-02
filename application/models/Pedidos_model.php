@@ -16,14 +16,16 @@ class Pedidos_model extends CI_Model
             'pedidos_produtos.pedido_id',
             'pedidos_produtos.produto_id',
             'pedidos_produtos.produto_nome',
+            'produtos.produto_meta_link',
             'produtos_fotos.foto_caminho' 
         ]);
 
         $this->db->where('pedidos.pedido_cliente_id', $cliente_user_id);
 
-         $this->db->join('clientes', 'clientes.cliente_id = pedidos.pedido_cliente_id');
+        $this->db->join('clientes', 'clientes.cliente_id = pedidos.pedido_cliente_id');
         $this->db->join('transacoes', 'transacoes.transacao_pedido_id = pedidos.pedido_id');
         $this->db->join('pedidos_produtos', 'pedidos_produtos.pedido_id = pedidos.pedido_id');
+        $this->db->join('produtos', 'pedidos_produtos.produto_id = produtos.produto_id');
         $this->db->join('produtos_fotos', 'produtos_fotos.foto_produto_id = pedidos_produtos.produto_id');
 
         $this->db->group_by('pedidos_produtos.pedido_id');
