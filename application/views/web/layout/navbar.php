@@ -42,7 +42,7 @@
                                                         <li><a href="<?php echo base_url('login'); ?>">Entrar</a> </li>
                                                         
                                                     <?php else: ?>
-                                                        <li><a href="#"> Perfil </a> </li>
+                                                        <li><a href="<?php echo base_url('perfil'); ?>"> Perfil </a> </li>
                                                         <li class="active"><a href="<?php echo base_url('pedido'); ?>">Pedidos </a></li>
                                                         <li ><a href="<?php echo base_url('login/logout'); ?>">Sair </a></li>
                                                 <?php endif; ?>

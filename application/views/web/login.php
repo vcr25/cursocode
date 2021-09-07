@@ -52,7 +52,7 @@
                                         </div>
                                         <input type="hidden" name="login" value="login">
                                         <div class="col-md-4 mt-10 mb-20 text-left text-md-right">
-                                            <a href="<?php echo base_url('cadastrar'); ?>"> Criar uma Conta </a>
+                                            <a href="<?php echo base_url('perfil'); ?>"> Criar uma Conta </a>
                                         </div>
                                         <div class="col-md-12">
                                             <button type="submit" class="register-button mt-0">Entrar</button>
