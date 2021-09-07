@@ -145,7 +145,7 @@
                                             <label>Estado *</label>
                                             <?php if(isset ($cliente)): ?>
 
-                                            <select class="custom-select" name="cliente_estado">
+                                            <select class="select_estado" name="cliente_estado">
                                             <option value="">Escolha...</option>
                                             <option value="AC" <?php echo ($cliente->cliente_estado == 'AC' ? 'selected' : '') ?>>Acre</option>
                                             <option value="AL" <?php echo ($cliente->cliente_estado == 'AL' ? 'selected' : '') ?>>Alagoas</option>
@@ -178,7 +178,7 @@
 
                                             <?php else: ?>
 
-                                            <select class="custom-select" name="cliente_estado">
+                                            <select class="select_estado" name="cliente_estado">
                                             <option value="">Escolha...</option>
                                             <option value="AC">Acre</option>
                                             <option value="AL">Alagoas</option>

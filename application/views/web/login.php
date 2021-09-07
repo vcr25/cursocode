@@ -20,6 +20,17 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-6 mb-30">
+                        <?php if($msg = $this->session->flashdata('sucesso')): ?>
+                            <div class="alert alert-success bg-success alert-dismissible show fade">
+                            <div class="alert-body">
+                                <button class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                                </button>
+                                <?php echo $msg; ?>
+                            </div>
+                            </div>
+                        <?php endif; ?>
+
                         <?php if($msg = $this->session->flashdata('erro')): ?>
                             <div class="alert alert-danger alert-dismissible show fade">
                             <div class="alert-body">
@@ -30,6 +41,7 @@
                             </div>
                             </div>
                         <?php endif; ?>
+
 
                             <!-- Login Form s-->
                            <?php echo form_open('login/auth'); ?>

@@ -21,7 +21,7 @@ class Perfil extends CI_Controller
           $this->form_validation->set_rules('cliente_nome', 'Nome', 'trim|required|min_length[4]|max_length[40]');
           $this->form_validation->set_rules('cliente_sobrenome', 'Sobrenome', 'trim|required|min_length[4]|max_length[140]');
           $this->form_validation->set_rules('cliente_data_nascimento', 'Data de Nascimento', 'trim|required');
-          $this->form_validation->set_rules('cliente_cpf', 'CPF do cliente', 'trim|required|exact_length[14]|is_unique[users.user_cpf]');
+          $this->form_validation->set_rules('cliente_cpf', 'CPF do cliente', 'trim|required|exact_length[14]|callback_valida_cpf');
           $this->form_validation->set_rules('cliente_email', 'Email', 'trim|required|valid_email|callback_valida_email');
 
           $cliente_telefone_fixo = $this->input->post('cliente_telefone_fixo');
@@ -155,6 +155,7 @@ class Perfil extends CI_Controller
 
                 if($this->form_validation->run()){
                     //Validou
+                   
                    $data = elements(
                        array(
                            'cliente_nome',
