@@ -47,7 +47,7 @@ class Pedido extends CI_Controller {
 
     public function imprimir($pedido_codigo = NULL)
     {
-      if(!$pedido_codigo || !$pedido = $this->core_model->get_by_id('pedidos', array('pedido_codigo' => $pedido_codigo))){
+      if(!$pedido_codigo || !$pedido = $this->pedidos_model->get_by_codigo( $pedido_codigo)){
         
         $this->session->set_flashdata('erro', 'Não encontramos o pedido');
         redirect('restrita/pedido');
@@ -61,9 +61,9 @@ class Pedido extends CI_Controller {
 
         
         $data['pedido_produtos'] = $this->core_model->get_all('pedidos_produtos', array('pedido_id' => $pedido->pedido_id));
-         echo '<pre>';
+        /*  echo '<pre>';
         print_r($data);
-        exit(); 
+        exit();  */
        
         $this->load->view('restrita/layout/header', $data);
         $this->load->view('restrita/pedido/imprimir');

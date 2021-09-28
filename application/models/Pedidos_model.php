@@ -56,5 +56,24 @@ class Pedidos_model extends CI_Model
 
     }
 
+    public function get_by_codigo($pedido_codigo = NULL)
+    {
+        $this->db->select([
+            'pedidos.*',
+            'clientes.cliente_id',
+             'CONCAT(clientes.cliente_nome, " ", clientes.cliente_sobrenome) as pedido_cliente_nome',
+             'clientes.*',
+            'transacoes.transacao_status as pedido_status',     
+        ]);
+
+        $this->db->where('pedidos.pedido_codigo', $pedido_codigo);
+
+        $this->db->join('clientes', 'clientes.cliente_id = pedidos.pedido_cliente_id', 'LEFT');
+        $this->db->join('transacoes', 'transacoes.transacao_pedido_id = pedidos.pedido_id', 'LEFT');
+
+        return $this->db->get('pedidos')->row();
+
+    }
+
 
 }
