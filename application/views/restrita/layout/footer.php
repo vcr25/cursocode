@@ -1,4 +1,5 @@
 <?php if($this->router->fetch_class() != 'login'): ?>
+  <?php if($this->router->fetch_method() != 'imprimir'): ?>
 
 <footer class="main-footer">
         <div class="footer-left">
@@ -7,7 +8,7 @@
         <div class="footer-right">
         </div>
 </footer>
-
+  <?php endif; ?>
 <?php endif; ?>
 
   </div>

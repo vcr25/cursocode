@@ -9,7 +9,7 @@ class Pedido extends CI_Controller {
 		parent::__construct();
         $this->load->helper('text');
         if(!$this->ion_auth->is_admin()){
-            redirect('login');
+            redirect('restrita/login');
         }
 		
 	}

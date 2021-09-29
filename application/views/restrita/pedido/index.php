@@ -101,7 +101,7 @@
                                                    ?>
                             </td>
                             <td>
-                            <a href="<?php echo base_url('restrita/pedido/imprimir/'.$pedido->pedido_codigo) ?>" class="btn btn-primary"><i class="fas fa-print fa-lg"></i></a>
+                            <a target="_blank" href="<?php echo base_url('restrita/pedido/imprimir/'.$pedido->pedido_codigo) ?>" class="btn btn-primary"><i class="fas fa-print fa-lg"></i></a>
                             
                             </td>
                           

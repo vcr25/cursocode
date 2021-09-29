@@ -60,78 +60,54 @@
                
                 <p> Cidade :  <?php echo $pedidos->cliente_cidade ?> - <?php echo $pedidos->cliente_estado; ?></p>
                 <p> Forma de envio :  <?php echo ($pedidos->pedido_forma_envio == 1 ? 'Sedex' : 'PAC'); ?> </p>
+                <hr>
+                <h5>Produtos do Pedido</h5>  
                 
 
-                   <!--  <div class="table-responsive">
+                    <div class="table-responsive">
                       <table class="table table-striped data-table"  id="table-1">
                         <thead>
                           <tr>
                             <th class="text-center">
-                             CODIGO 
+                             Produto
                             </th>
-                            <th>Data Pedido </th>
-                            <th>Cliente</th>
+                            <th>Quantidade</th>
+                            <th>Valor Unitário</th>
                             <th>Valor Total</th>
-                            <th>Status</th>
-                            <th class="nosort">Ação</th>
+                           
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                          <?php foreach($pedidos as $pedido): ?>
+                          <?php foreach($pedido_produtos as $produto): ?>
                             <td>
-                             <?php echo $pedido->pedido_codigo; ?>
+                             <?php echo word_limiter($produto->produto_nome, 5); ?>
                             </td>
-                            <td><?php echo $pedido->pedido_data_cadastro ;  ?></td>
+                            <td><?php echo $produto->produto_quantidade ;  ?></td>
                             
-                            <td><?php echo $pedido->pedido_cliente_nome ;  ?></td>
+                            <td><?php echo 'R$: '. number_format($produto->produto_valor_unitario, 2) ;  ?></td>
                          
-                            <td><?php echo 'R$: '. number_format( $pedido->pedido_valor_final, 2) ;  ?></td>
-                           
-                            <td>
-                            <?php  switch($pedido->pedido_status){
-                                                    case 1:
-                                                      echo '<div class="badge badge-secondary badge-shadow">Aguardando Pagamento</div>';
-                                                      break;
-                                                    case 2:
-                                                      echo '<div class="badge badge-info badge-shadow">Em  Análise</div>';
-                                                      break;
-                                                    case 3:
-                                                      echo '<div class="badge badge-success badge-shadow">Pago</div>';
-                                                      break;
-                                                    case 4:
-                                                      echo '<div class="badge badge-light badge-shadow">Disponível</div>';
-                                                      break;
-                                                    case 5:
-                                                      echo '<div class="badge badge-warning badge-shadow">Em Disputa</div>';
-                                                      break;
-                                                    case 6:
-                                                      echo '<div class="badge badge-danger badge-shadow">Devolvido</div>';
-                                                      break;
-                                                    case 7:
-                                                        echo '<div class="badge badge-danger badge-shadow">Cancelada</div>';
-                                                        break;
-                                                    case 8:
-                                                        echo '<div class="badge badge-success badge-shadow">Debitado</div>';
-                                                        break;
-                                                    case 9:
-                                                        echo '<div class="badge badge-info badge-shadow">Retenção Temporário</div>';
-                                                        break;
-                                                  } 
-                                                   ?>
-                            </td>
-                            <td>
-                            <a href="<?php echo base_url('restrita/pedido/imprimir/'.$pedido->pedido_codigo) ?>" class="btn btn-primary"><i class="fas fa-print fa-lg"></i></a>
-                            
-                            </td>
+                            <td><?php echo 'R$: '. number_format( $produto->produto_valor_total, 2) ;  ?></td>
                           
                           </tr> 
+                          <tr>
+                            <th colspan="3" class="text-right">
+                              Valor do Frete: 
+                            </th>
+                            <td><?php echo 'R$: '. number_format( $pedidos->pedido_valor_frete, 2) ;  ?></td>
+                          </tr>
+                          <tr>
+                            <th colspan="3" class="text-right">
+                              Valor Total: 
+                            </th>
+                            <td><?php echo 'R$: '. number_format( $pedidos->pedido_valor_final, 2) ;  ?></td>
+                          </tr>
                         </tbody>
 
                         <?php endforeach; ?>
                       </table>
                       
-                    </div> -->
+                    </div>
                   </div>
                 </div>
               </div>
