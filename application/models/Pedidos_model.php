@@ -75,5 +75,35 @@ class Pedidos_model extends CI_Model
 
     }
 
+    public function get_vendas_hoje()
+    {
+        $this->db->select([
+            'pedidos.*',
+            'clientes.cliente_id',
+             'CONCAT(clientes.cliente_nome, " ", clientes.cliente_sobrenome) as pedido_cliente_nome',
+            'transacoes.transacao_status as pedido_status',     
+        ]);
+
+        $this->db->join('clientes', 'clientes.cliente_id = pedidos.pedido_cliente_id', 'LEFT');
+        $this->db->join('transacoes', 'transacoes.transacao_pedido_id = pedidos.pedido_id', 'LEFT');
+
+        $this->db->where("SUBSTR(pedido_data_cadastro, 1, 10) = ", date('Y-m-d'));
+
+        return $this->db->get('pedidos')->result();
+    }
+
+    public function get_produtos_mais_vendidos()
+    {
+        $this->db->select([
+            'pedidos_produtos.*',
+            'COUNT(*) as vendidos',
+        ]);
+
+        $this->db->group_by('pedidos_produtos.produto_id');
+        $this->db->order_by('vendidos', 'DESC');
+
+        return $this->db->get('pedidos_produtos')->result();
+    }
+
 
 }

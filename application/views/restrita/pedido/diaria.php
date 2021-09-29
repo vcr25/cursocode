@@ -1,10 +1,8 @@
-<?php $this->load->view('restrita/layout/navbar'); ?>
 
-<?php $this->load->view('restrita/layout/sidebar'); ?>
 
 
 <!-- Main Content -->
-    <div class="main-content">
+<div class="container" style="margin-top: 3rem;">
         <section class="section">
           <div class="section-body">
             <!-- add content here -->
@@ -14,70 +12,49 @@
                
                   <div class="card-header">
                   <h4><?php echo $titulo ?></h4>
-                  <div class="dropdown d-inline mr-2 ">
-                      <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton3"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Relatórios
-                      </button>
-                      <div class="dropdown-menu">
-                        <a target="_blank" class="dropdown-item" href="<?php echo base_url('restrita/pedido/diaria') ?>">Vendas Diárias</a>
-                        <a target="_blank" class="dropdown-item" href="<?php echo base_url('restrita/pedido/vendidos') ?>">Produtos Mais Vendidos</a>
-                       
-                      </div>
-                    </div>
+                   
                   </div>
 
                   <div class="card-body">
-                  <!-- Msg de Sucesso -->
-                  <?php if($msg = $this->session->flashdata('sucesso')): ?>
-                    <div class="alert alert-dark alert-dismissible show fade">
-                      <div class="alert-body">
-                        <button class="close" data-dismiss="alert">
-                          <span>&times;</span>
-                        </button>
-                        <?php echo $msg; ?>
-                      </div>
-                    </div>
-                  <?php endif; ?>
-
-                   <!-- Msg de Erro -->
-                  <?php if($msg = $this->session->flashdata('erro')): ?>
-                    <div class="alert alert-danger alert-dismissible show fade">
-                      <div class="alert-body">
-                        <button class="close" data-dismiss="alert">
-                          <span>&times;</span>
-                        </button>
-                        <?php echo $msg; ?>
-                      </div>
-                    </div>
-                  <?php endif; ?>
-
+                
+                   <?php if(isset($pedidos)): ?>
                     <div class="table-responsive">
                       <table class="table table-striped data-table"  id="table-1">
                         <thead>
                           <tr>
                             <th class="text-center">
-                             CODIGO 
+                             Codigo
                             </th>
-                            <th>Data Pedido </th>
-                            <th>Cliente</th>
-                            <th>Valor Total</th>
+                            <th>Data do pedido</th>
+                            <th>Nome Cliente</th>
+                            <th>Frete</th>
                             <th>Status</th>
-                            <th class="nosort">Ação</th>
+                            <th >Valor do Produto</th>
+                            <th >Valor do Frete</th>
+                            <th >Valor Total</th>
+
+                           
                           </tr>
                         </thead>
                         <tbody>
+                            <?php 
+                                $grand_total_fretes = 0;
+                                $grand_total_pedidos = 0;
+                            ?>
                           <tr>
                           <?php foreach($pedidos as $pedido): ?>
-                            <td>
-                             <?php echo $pedido->pedido_codigo; ?>
-                            </td>
-                            <td><?php echo $pedido->pedido_data_cadastro ;  ?></td>
+                            <?php
+
+                             $grand_total_fretes += $pedido->pedido_valor_frete;
+                             $grand_total_pedidos += $pedido->pedido_valor_produtos;
                             
+                            ?>
+                            <td>
+                             <?php echo $pedido->pedido_codigo ?>
+                            </td>
+                            <td><?php echo formata_data_banco_com_hora($pedido->pedido_data_cadastro) ;  ?></td>
                             <td><?php echo $pedido->pedido_cliente_nome ;  ?></td>
-                         
-                            <td><?php echo 'R$: '. number_format( $pedido->pedido_valor_final, 2) ;  ?></td>
-                           
+                            <td><?php echo ($pedido->pedido_forma_envio == 1 ? 'Sedex' : 'PAC'); ?></td>
                             <td>
                             <?php  switch($pedido->pedido_status){
                                                     case 1:
@@ -110,26 +87,39 @@
                                                   } 
                                                    ?>
                             </td>
-                            <td>
-                            <a target="_blank" href="<?php echo base_url('restrita/pedido/imprimir/'.$pedido->pedido_codigo) ?>" class="btn btn-primary"><i class="fas fa-print fa-lg"></i></a>
-                            
-                            </td>
+                            <td><?php echo 'R$: '. number_format($pedido->pedido_valor_produtos, 2) ;  ?></td>
+                         
+                            <td><?php echo 'R$: '. number_format( $pedido->pedido_valor_frete, 2) ;  ?></td>
+                            <td><?php echo 'R$: '. number_format( $pedido->pedido_valor_final, 2) ;  ?></td>
                           
                           </tr> 
+                          
+                         
                         </tbody>
 
                         <?php endforeach; ?>
+                        <tr>
+                            <th colspan="3" class="text-right">
+                              Valores totais
+                            </th>
+                            <td>Frete: <?php echo 'R$: '. number_format( $grand_total_fretes, 2) ;  ?></td>
+                            <td>Vendas: <?php echo 'R$: '. number_format( $grand_total_pedidos, 2) ;  ?></td>
+                          </tr>
                       </table>
                       
                     </div>
+                    <?php else: ?>
+                        <h5>Nenhuma venda feita hoje!</h5>
+                    <?php endif; ?>
                   </div>
                 </div>
               </div>
+              
             </div>
           </div>
         </section>
 
-      <!--  <?php $this->load->view('restrita/layout/settings_sidebar'); ?> -->
+   
       </div>
 
      

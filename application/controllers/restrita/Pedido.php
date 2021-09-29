@@ -73,5 +73,51 @@ class Pedido extends CI_Controller {
         
     }
 
+    public function diaria()
+    {
+      
+        $data = array(
+            'titulo' => 'Relatório de vendas diárias',
+            
+        );
+
+        if($pedido = $this->pedidos_model->get_vendas_hoje()){
+            $data['pedidos'] = $pedido;
+        }
+
+
+       /*  echo '<pre>';
+        print_r($data['pedidos']);
+        exit();  */
+       
+        $this->load->view('restrita/layout/header', $data);
+        $this->load->view('restrita/pedido/diaria');
+        $this->load->view('restrita/layout/footer');
+        
+    }
+
+    public function vendidos()
+    {
+      
+        $data = array(
+            'titulo' => 'Relatório de produtos mais vendidos',
+            
+        );
+
+        if($pedido = $this->pedidos_model->get_produtos_mais_vendidos()){
+            $data['pedidos'] = $pedido;
+        }
+
+
+       /*  echo '<pre>';
+        print_r($data['pedidos']);
+        exit();  */
+       
+        $this->load->view('restrita/layout/header', $data);
+        $this->load->view('restrita/pedido/vendidos');
+        $this->load->view('restrita/layout/footer');
+        
+    }
+
 
 }
