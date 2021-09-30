@@ -44,4 +44,30 @@ class Transacoes extends CI_Controller {
         $this->load->view('restrita/layout/footer');
     }
 
+    public function view($transacao_id = NULL)
+    {
+        $transacao_id = (int) $transacao_id;
+
+        if(!$transacao_id || !$transacao = $this->transacoes_model->get_by_id($transacao_id)){
+            $this->session->set_flashdata('erro', 'Transação não encontrada');
+            redirect('restrita/transacoes');
+        }else{
+            $data = array(
+                'titulo' => 'Detalhe da Transação',
+                
+                'transacao' => $transacao
+            );
+    
+    
+           /*  echo '<pre>';
+            print_r($data['transacao']);
+            exit();  */
+    
+            $this->load->view('restrita/layout/header', $data);
+            $this->load->view('restrita/transacoes/view');
+            $this->load->view('restrita/layout/footer');
+        }
+       
+    }
+
 }
