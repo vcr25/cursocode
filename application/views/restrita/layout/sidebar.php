@@ -15,6 +15,9 @@
             <li class="dropdown <?php echo $this->router->fetch_class() == 'pedido' && $this->router->fetch_method() == 'index' ? 'active': '' ?>">
               <a href="<?php echo base_url('/restrita/pedido'); ?>" class="nav-link"><i data-feather="shopping-cart"></i><span>Pedidos</span></a>
             </li>
+            <li class="dropdown <?php echo $this->router->fetch_class() == 'transacoes' && $this->router->fetch_method() == 'index' ? 'active': '' ?>">
+              <a href="<?php echo base_url('/restrita/transacoes'); ?>" class="nav-link"><i data-feather="dollar-sign"></i><span>Transações</span></a>
+            </li>
          
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="settings"></i><span>Configurações</span></a>
