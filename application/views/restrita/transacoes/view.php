@@ -12,7 +12,9 @@
             <div class="col-12 col-md-4 col-lg-12">
                 <div class="pricing pricing-highlight">
                   <div class="pricing-title mt-3 p-3">
-                    Pedido <?php echo $transacao->pedido_codigo; ?>
+                 
+                            
+                    Pedido <a target="_blank" href="<?php echo base_url('restrita/pedido/imprimir/'.$transacao->pedido_codigo) ?>" class="btn btn-primary"><?php echo $transacao->pedido_codigo ?></i></a>
                   </div>
                   <div class="pricing-padding text-left">
                     <div class="mb-4 pricing-item">
@@ -51,19 +53,20 @@
                     <div class="pricing-details">
                       <div class="pricing-item">
                         <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
-                        <div class="pricing-item-label"><?php echo $transacao->pedido_cliente_nome; ?></div>
+                        <div class="pricing-item-label">Cliente: &nbsp;<?php echo $transacao->pedido_cliente_nome; ?></div>
                       </div>
                       <div class="pricing-item">
                         <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
-                        <div class="pricing-item-label">Data: &nbsp;<?php    echo formata_data_banco_com_hora($transacao->transacao_data) ?></div>
+                        <div class="pricing-item-label">Data da Compra: &nbsp;<?php    echo formata_data_banco_com_hora($transacao->transacao_data) ?></div>
                       </div>
                       <div class="pricing-item">
                         <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
-                        <div class="pricing-item-label">Valor:&nbsp;<?php  echo 'R$:' . number_format($transacao->transacao_valor_bruto) ?></div>
+                        <div class="pricing-item-label">Valor do Pedido:&nbsp;<?php  echo 'R$:' . number_format($transacao->transacao_valor_bruto, 2) ?></div>
                       </div>
+
                       <div class="pricing-item">
                         <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
-                        <div class="pricing-item-label"><?php  switch($transacao->transacao_tipo_metodo_pagamento){
+                        <div class="pricing-item-label">Forma de pagamento: &nbsp;<?php  switch($transacao->transacao_tipo_metodo_pagamento){
                                 case 1:
                                     echo '<div class="badge badge-secondary badge-shadow"><i class="fa fa-credit-card" aria-hidden="true">&nbsp;&nbspCartão de Credito</i></div>';
                                     break;
@@ -75,18 +78,29 @@
                                     break;
                             }   ?></div>
                       </div>
+                      <?php if($transacao->transacao_tipo_metodo_pagamento == 2 || $transacao->transacao_tipo_metodo_pagamento == 3): ?>
+                        <div class="pricing-item">
+                        <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
+                        <div class="pricing-item-label">Link de Pagamento:&nbsp;&nbsp;<a href="<?php echo $transacao->transacao_link_pagamento; ?>" target="_blank" rel="noopener noreferrer"><i class="fas fa-link">&nbsp;Gerar</i></a></div>
+                      </div>
+                      <?php endif; ?>
                       <div class="pricing-item">
                         <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
                         <div class="pricing-item-label">Taxa PagSeguro:&nbsp; <?php echo 'R$:'. number_format($transacao->transacao_valor_taxa_pagseguro, 2) ?></div>
                       </div>
                       <div class="pricing-item">
                         <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
-                        <div class="pricing-item-label">Valor liquido:&nbsp; <?php echo 'R$:'. number_format($transacao->transacao_valor_liquido, 2) ?></div>
+                        <div class="pricing-item-label">Valor Liquido:&nbsp; <?php echo 'R$:'. number_format($transacao->transacao_valor_liquido, 2) ?></div>
                       </div>
+                      <div class="pricing-item">
+                        <div class="pricing-item-icon"><i class="fas fa-check"></i></div>
+                        <div class="pricing-item-label">Parcelas:&nbsp; <?php echo $transacao->transacao_numero_parcelas ?></div>
+                      </div>
+                      
                     </div>
                   </div>
                   <div class="pricing-cta">
-                    <a href="#">Subscribe <i class="fas fa-arrow-right"></i></a>
+                    <a href="<?php echo base_url('restrita/transacoes'); ?>">Voltar <i class="fas fa-arrow-right"></i></a>
                   </div>
                 </div>
               </div>
