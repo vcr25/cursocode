@@ -70,4 +70,67 @@ class Transacoes extends CI_Controller {
        
     }
 
+    public function atualizar($transacao_codigo_hash = NULL)
+    {
+        $url_check = "https://ws.sandbox.pagseguro.uol.com.br/";
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_URL, $url_check);
+
+        $xml = curl_exec($curl);
+
+
+        if($xml != 'OK'){
+            $this->session->set_flashdata('erro', 'A URL' . $url_check. ' não está disponível, tente novamente mais tarde');
+            redirect('restrita/transacoes');
+        }else{
+
+            $config_pageseguro = $this->core_model->get_by_id('config_pagseguro', array('config_id'=> 1));
+
+            $parametros = array(
+                'email' => $config_pageseguro->config_email,
+                'token' => $config_pageseguro->config_token,
+            );
+
+            $parametros = http_build_query($parametros);
+
+            if($transacao_codigo_hash){
+                if(!$transacao = $this->core_model->get_by_id('transacoes', array('transacao_codigo_hash' => $$transacao_codigo_hash))){
+                    $this->session->set_flashdata('erro', 'Transação não encontrada');
+                    redirect('restrita/transacoes');
+                }else{
+
+                    $url = 'https://ws.sandbox.pagseguro.uol.com.br/v3/transaction/'.$transacao->transacao_codigo_hash. '?'.$parametros;
+
+                    $curl = curl_init();
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_URL, $url);
+            
+                    $xml = curl_exec($curl);
+                    $xml = simplexml_load_string($xml);
+
+                    $transacao_status = $xml->status;
+
+                    if($transacao->transacao_status != $transacao_status){
+
+                        $data = array(
+                            'transacao_status' => $transacao_status
+                        );
+
+                        $this->core_model->update('transacoes', $data, array('transacao_codigo_hash' => $transacao_codigo_hash));
+                        redirect('restrita/transacoes');
+                    }else{
+                        $this->session->set_flashdata('sucesso', 'Transação já atualizada');
+                        redirect('restrita/transacoes');
+                    }
+                }
+
+               
+            }else{
+
+            }
+        }
+    }
+
 }

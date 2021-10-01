@@ -110,6 +110,7 @@
                             </td>
                             <td>
                             <a  href="<?php echo base_url('restrita/transacoes/view/'.$transacao->transacao_id) ?>" class="btn btn-primary"><i class="fas fa-eye fa-lg"></i></a>
+                            <a  href="<?php echo base_url('restrita/transacoes/atualizar/'.$transacao->transacao_codigo_hash) ?>" class="btn btn-info"><i class="fas fa-edit fa-lg"></i></a>
                             
                             </td>
                           
